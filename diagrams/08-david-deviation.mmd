@@ -1,0 +1,29 @@
+graph LR
+    subgraph DAVID["David's Deviation"]
+        direction LR
+        REG["Local Registry<br/>10.0.0.1:5000"]
+        IGN["Ignition Server<br/>(Jason's PHP +<br/>lab_bootstrap.php)"]
+
+        subgraph S2["Bare Metal → KVM Hypervisor"]
+            HYP["System-2<br/>hypervisor_node image<br/>(forked from kube_node)"]
+        end
+
+        subgraph BUBBLE["Bubble Inside KVM"]
+            INFRA["bind-kea VM<br/>DNS + DHCP"]
+            subgraph K8S["Kubernetes Cluster"]
+                CP["Control Plane"]
+                W1["Worker"]
+                W2["Worker"]
+            end
+        end
+    end
+
+    REG -->|"bootc switch"| HYP
+    IGN -->|"Flattened<br/>static JSON"| S2
+    HYP -->|"libvirt VMs"| BUBBLE
+    INFRA --> K8S
+
+    style DAVID fill:#fff0e8,stroke:#cc6633
+    style S2 fill:#f0f0f0,stroke:#666
+    style BUBBLE fill:#ffe8e8,stroke:#cc3333
+    style K8S fill:#e8ffe8,stroke:#339933

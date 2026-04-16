@@ -1,5 +1,21 @@
 # Attribution — Standing on Jason's Shoulders
 
+## Visual Overview
+
+### Jason's Original Pattern
+![Jason's Pattern](07-jason-original-pattern.png)
+
+### David's Deviation
+![David's Deviation](08-david-deviation.png)
+
+### The Shared Pipeline — Same Factory, Different Product
+![Shared Pipeline](09-shared-pipeline.png)
+
+### What David Added on Top
+![What David Added](10-what-david-added.png)
+
+---
+
 ## The Foundation
 
 This lab exists because of the work of **Jason Nagin** ([@JasonN3](https://github.com/JasonN3), Red Hat). Jason built a complete, open-source toolkit for immutable infrastructure: bootc-based container images that become operating systems, PHP-driven Ignition configs that provision machines on first boot, and a reboot manager that keeps clusters healthy during rolling updates.

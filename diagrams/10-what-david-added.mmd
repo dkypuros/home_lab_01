@@ -1,0 +1,25 @@
+graph TB
+    subgraph JASON_BASE["Jason's Foundation"]
+        I1["ignition<br/>PHP Ignition server"]
+        I2["kube_node<br/>bootc K8s image"]
+        I3["build-container-installer<br/>ISO builder"]
+        I4["kubernetes_reboot_manager<br/>Fleet lock"]
+    end
+
+    subgraph DAVID_ADDS["What David Added"]
+        D1["Discovery Act<br/>Safe RAM probe<br/>before disk wipe"]
+        D2["Flattened Ignition<br/>Static JSON export<br/>no runtime merges"]
+        D3["Multi-Role Nodes<br/>hypervisor vs kube_node<br/>per-node config"]
+        D4["Bubble Architecture<br/>Nested K8s inside KVM<br/>own DNS/DHCP per cluster"]
+        D5["AI Orchestration<br/>Claude Code + Codex<br/>across machines"]
+    end
+
+    I1 --> D2
+    I1 --> D3
+    I2 --> D3
+    I2 --> D1
+    D3 --> D4
+    D4 --> D5
+
+    style JASON_BASE fill:#e8f0ff,stroke:#3366cc
+    style DAVID_ADDS fill:#fff0e8,stroke:#cc6633

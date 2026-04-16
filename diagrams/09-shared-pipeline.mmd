@@ -1,0 +1,30 @@
+graph TB
+    subgraph SHARED["Shared: The bootc Pipeline"]
+        direction TB
+        A["Containerfile<br/>(FROM fedora-coreos:stable)"]
+        B["podman build → OCI Image"]
+        C["podman push → Registry"]
+        D["PXE Boot → iPXE → FCOS Live"]
+        E["Ignition Config<br/>(PHP server)"]
+        F["prep-machine.sh<br/>bootc switch"]
+        G["Reboot → Immutable OS"]
+    end
+
+    A --> B --> C --> D
+    E --> D
+    D --> F --> G
+
+    subgraph JASON_OUT["Jason's Output"]
+        KN["kube_node<br/>kubeadm + kubelet + containerd"]
+    end
+
+    subgraph DAVID_OUT["David's Output"]
+        HN["hypervisor_node<br/>qemu-kvm + libvirt + bridge-utils"]
+    end
+
+    G -->|"same pipeline<br/>different payload"| JASON_OUT
+    G -->|"same pipeline<br/>different payload"| DAVID_OUT
+
+    style SHARED fill:#f0f0ff,stroke:#6666cc
+    style JASON_OUT fill:#e8f0ff,stroke:#3366cc
+    style DAVID_OUT fill:#fff0e8,stroke:#cc6633
