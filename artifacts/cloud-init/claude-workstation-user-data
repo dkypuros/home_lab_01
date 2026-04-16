@@ -1,0 +1,21 @@
+#cloud-config
+hostname: claude-workstation
+users:
+  - name: student
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    lock_passwd: false
+    plain_text_passwd: "${CLAUDE_WS_PASS}"  # see .env
+    ssh_authorized_keys:
+      - YOUR_SSH_PUBLIC_KEY_HERE
+packages:
+  - git
+  - curl
+  - jq
+runcmd:
+  - growpart /dev/vda 5 || true
+  - xfs_growfs / || resize2fs /dev/vda5 || true
+  - curl -fsSL https://rpm.nodesource.com/setup_lts.x | bash -
+  - dnf install -y nodejs
+  - npm install -g @anthropic-ai/claude-code
+  - echo "Claude Code workstation ready" > /home/student/READY

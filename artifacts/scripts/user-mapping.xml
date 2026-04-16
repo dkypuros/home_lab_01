@@ -1,0 +1,24 @@
+<user-mapping>
+  <!-- Credentials: see .env for actual values -->
+  <authorize username="${GUACAMOLE_USER}" password="${GUACAMOLE_PASS}">
+    <connection name="Claude Workstation Desktop">
+      <protocol>vnc</protocol>
+      <param name="hostname">${CLAUDE_WS_IP}</param>
+      <param name="port">5901</param>
+      <param name="password">${GUACAMOLE_PASS}</param>
+    </connection>
+    <connection name="Claude Workstation SSH">
+      <protocol>ssh</protocol>
+      <param name="hostname">${CLAUDE_WS_IP}</param>
+      <param name="port">22</param>
+      <param name="username">${CLAUDE_WS_USER}</param>
+      <param name="password">${CLAUDE_WS_PASS}</param>
+    </connection>
+    <connection name="Local Desktop">
+      <protocol>vnc</protocol>
+      <param name="hostname">localhost</param>
+      <param name="port">5901</param>
+      <param name="password">${GUACAMOLE_PASS}</param>
+    </connection>
+  </authorize>
+</user-mapping>

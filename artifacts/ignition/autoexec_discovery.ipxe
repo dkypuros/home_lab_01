@@ -1,0 +1,11 @@
+#!ipxe
+# ACT I: Discovery — static Ignition, no merges, no fragments
+iseq ${net0/mac} 74:56:3c:08:60:bd && goto discovery ||
+set hub http://10.0.0.1:8090
+chain --autofree ${hub}/ipxe-intent?mac=${net0/mac} || shell
+
+:discovery
+set base http://10.0.0.1
+kernel ${base}/fcos/assets/fedora-coreos-live-kernel-x86_64 ip=dhcp rd.neednet=1 console=tty0 initrd=main ignition.firstboot ignition.platform.id=metal coreos.live.rootfs_url=${base}/fcos/assets/fedora-coreos-live-rootfs.x86_64.img ignition.config.url=${base}/fcos/discovery-static.ign
+initrd ${base}/fcos/assets/fedora-coreos-live-initramfs.x86_64.img
+boot

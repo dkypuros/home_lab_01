@@ -1,0 +1,16 @@
+[Unit]
+Description=Prep Machine — bootc switch to hypervisor image
+Requires=network-online.target
+After=network-online.target
+ConditionFirstBoot=true
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+Environment=BOOTC_IMAGE_REF=10.0.0.1:5000/hypervisor_node:latest
+ExecStart=/bin/bash /usr/local/src/prep-machine.sh
+StandardOutput=journal+console
+StandardError=journal+console
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,29 @@
+#cloud-config
+# NOTE: This is a reference template. The actual guacamole VM was built by
+# the claude-workstation's Claude Code instance with a more complex cloud-init
+# that compiled guacd from source. Key requirements:
+#
+# Packages needed: tomcat, java-21-openjdk, tigervnc-server, openbox, firefox, xterm
+# guacd: compiled from source (1.5.5) with libvncserver-devel
+# Guacamole WAR: download 1.6.0, then run through Jakarta migration tool:
+#   java -jar jakartaee-migration-1.0.8-shaded.jar guacamole-1.6.0.war guacamole-jakarta.war
+#
+# Post-build fixes required:
+# 1. ldconfig: echo '/usr/local/lib' > /etc/ld.so.conf.d/guacamole.conf && ldconfig
+# 2. guacd bind: override to listen on 0.0.0.0 not ::1
+# 3. JAVA_HOME: set to java-21-openjdk in /etc/sysconfig/tomcat
+#
+# user-mapping.xml connections:
+#   - Claude Workstation Desktop (VNC to 192.168.86.41:5901)
+#   - Claude Workstation SSH (SSH to 192.168.86.41:22)
+#   - Local Desktop (VNC to localhost:5901)
+
+hostname: guacamole-vm
+users:
+  - name: student
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    lock_passwd: false
+    plain_text_passwd: "${GUACAMOLE_PASS}"  # see .env
+    ssh_authorized_keys:
+      - YOUR_SSH_PUBLIC_KEY_HERE

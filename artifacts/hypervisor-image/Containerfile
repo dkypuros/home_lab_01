@@ -1,0 +1,19 @@
+FROM quay.io/fedora/fedora-coreos:stable
+
+COPY rootfs/ /
+
+# Resolve nfs-utils-coreos conflict (libvirt depends on nfs-utils)
+RUN dnf swap -y nfs-utils-coreos nfs-utils && dnf clean all
+
+# Install KVM/libvirt hypervisor packages
+RUN dnf install -y \
+        qemu-kvm \
+        libvirt \
+        virt-install \
+        bridge-utils \
+        jq \
+    && dnf clean all
+
+RUN systemctl enable libvirtd.service
+RUN rm -f /etc/libvirt/qemu/networks/autostart/default.xml
+RUN sed -i "s/SELINUX=.*/SELINUX=permissive/" /etc/selinux/config

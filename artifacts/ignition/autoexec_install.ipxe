@@ -1,0 +1,11 @@
+#!ipxe
+# ACT II: Persistent Install — destructive, wipes /dev/sda
+iseq ${net0/mac} 74:56:3c:08:60:bd && goto install_system2 ||
+set hub http://10.0.0.1:8090
+chain --autofree ${hub}/ipxe-intent?mac=${net0/mac} || shell
+
+:install_system2
+set base http://10.0.0.1
+kernel ${base}/fcos/assets/fedora-coreos-live-kernel-x86_64 ip=dhcp rd.neednet=1 console=tty0 initrd=main ignition.firstboot ignition.platform.id=metal coreos.live.rootfs_url=${base}/fcos/assets/fedora-coreos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=${base}/fcos/system-2-final.ign
+initrd ${base}/fcos/assets/fedora-coreos-live-initramfs.x86_64.img
+boot

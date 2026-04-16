@@ -1,0 +1,23 @@
+{
+  "ignition": { "version": "3.4.0" },
+  "passwd": {
+    "users": [
+      {
+        "name": "core",
+        "sshAuthorizedKeys": [
+          "YOUR_SSH_PUBLIC_KEY_HERE"
+        ]
+      }
+    ]
+  },
+  "storage": {
+    "files": [
+      {
+        "path": "/etc/hostname",
+        "mode": 420,
+        "overwrite": true,
+        "contents": { "source": "data:,discovery-probe" }
+      }
+    ]
+  }
+}
