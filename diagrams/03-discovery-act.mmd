@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant OP as Operator (Mac)
+    participant S1 as System-1 (Hub)
+    participant S2 as System-2 (Target)
+
+    Note over OP: Act I: Discovery Probe
+    OP->>S1: Deploy discovery-static.ign (SSH key + hostname only)
+    OP->>S1: Set autoexec.ipxe to discovery mode (no install_dev)
+    OP->>S2: Power on (smart plug API)
+
+    S2->>S1: PXE → iPXE → kernel + rootfs (RAM only)
+    S2->>S1: Fetch discovery-static.ign
+    Note over S2: FCOS boots entirely into RAM<br/>No disk writes. No bridge. No prep-machine.
+
+    OP->>S2: SSH core@10.0.0.102
+    OP->>S2: lsblk → /dev/sda (223G)
+    OP->>S2: ip link → enp4s0 (74:56:3c:08:60:bd)
+
+    Note over OP: Truth Strings captured
+    OP->>S2: Power off
+    Note over OP: Act I complete.<br/>Now safe to build with verified hardware names.

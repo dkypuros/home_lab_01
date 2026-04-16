@@ -1,0 +1,14 @@
+graph LR
+    S1["Stage 1<br/>━━━━━━<br/>KVM Foundation<br/>PXE → Ignition → bootc"]
+    S2["Stage 2<br/>━━━━━━<br/>Storage<br/>2x 1TB SSDs<br/>libvirt pools"]
+    S3["Stage 3<br/>━━━━━━<br/>K8s Bubble<br/>BIND/Kea VM<br/>3-node cluster<br/>Cilium CNI"]
+    S4["Stage 4<br/>━━━━━━<br/>Workloads<br/>Dashboard<br/>Apps · Monitoring"]
+
+    S1 -->|"disk + NIC<br/>truth strings"| S2
+    S2 -->|"ssd-a + ssd-b<br/>ready for VMs"| S3
+    S3 -->|"cluster Ready<br/>all nodes healthy"| S4
+
+    style S1 fill:#d4edda,stroke:#28a745
+    style S2 fill:#d4edda,stroke:#28a745
+    style S3 fill:#d4edda,stroke:#28a745
+    style S4 fill:#fff3cd,stroke:#ffc107

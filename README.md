@@ -8,43 +8,11 @@ This repo documents the infrastructure, design decisions, and reproducible build
 
 ## Lab Topology
 
-```
-┌─────────────────────────────────────────────────────┐
-│  Home Network (192.168.86.0/24)                     │
-│                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐          │
-│  │ System-1 │  │  NUC     │  │ Mac      │          │
-│  │ (Hub)    │  │ (Discord)│  │ (You)    │          │
-│  │ .86.20   │  │ .86.47   │  │ .86.21   │          │
-│  └────┬─────┘  └──────────┘  └──────────┘          │
-│       │                                              │
-│  ┌────┴─── VMs (macvtap) ────────────────┐          │
-│  │ GitLab VM (.86.48)                     │          │
-│  │ Claude Workstation (.86.41)            │          │
-│  │ Guacamole VM (.86.42)                  │          │
-│  └────────────────────────────────────────┘          │
-└──────────────────────┬──────────────────────────────┘
-                       │
-              ┌────────┴────────┐
-              │ Lab Network     │
-              │ (10.0.0.0/24)   │
-              │                 │
-              │  System-1: .1   │
-              │  System-2: .102 │
-              │  System-3: .103 │
-              └────────┬────────┘
-                       │
-              ┌────────┴────────────────────┐
-              │ System-2 (KVM Hypervisor)    │
-              │                              │
-              │  ┌── Bubble-A (10.2.0.0/24)──┐
-              │  │ bind-kea-a  (.2)  DNS/DHCP │
-              │  │ k8s-cp-1    (.10) K8s CP   │
-              │  │ k8s-worker-1 (.11) Worker  │
-              │  │ k8s-worker-2 (.12) Worker  │
-              │  └────────────────────────────┘
-              └─────────────────────────────┘
-```
+![Lab Topology](diagrams/01-lab-topology.png)
+
+## Build Progression
+
+![Stage Progression](diagrams/05-stage-progression.png)
 
 ## Quick Start
 
@@ -100,6 +68,20 @@ This repo documents the infrastructure, design decisions, and reproducible build
 - Tailscale (remote access)
 - Claude Code + Codex (AI agents)
 - Cockpit + Guacamole (web management)
+
+## Architecture Diagrams
+
+| Diagram | Description |
+|---------|-------------|
+| ![PXE Boot Sequence](diagrams/02-pxe-boot-sequence.png) | **PXE Boot Sequence** — How a bare-metal machine goes from power-on to persistent hypervisor |
+| ![Discovery Act](diagrams/03-discovery-act.png) | **Discovery Act** — Safe RAM-only probe to capture hardware truth strings |
+| ![Bubble Architecture](diagrams/04-bubble-architecture.png) | **Bubble Architecture** — Self-contained K8s cluster inside System-2's KVM |
+| ![Access Paths](diagrams/06-access-paths.png) | **Access Paths** — How to reach each system via Tailscale, home network, or tunnel |
+
+All diagram sources are in `diagrams/*.mmd` (Mermaid format). Regenerate with:
+```
+npx @mermaid-js/mermaid-cli -i diagram.mmd -o diagram.png -b white -w 1200
+```
 
 ## License
 

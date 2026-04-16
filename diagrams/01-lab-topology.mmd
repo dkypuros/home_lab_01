@@ -1,0 +1,41 @@
+graph TB
+    subgraph HOME["Home Network (192.168.86.0/24)"]
+        MAC["Mac (You)<br/>192.168.86.21"]
+        NUC["Intel NUC<br/>192.168.86.47<br/>Discord Gateway"]
+        S1["System-1 (Hub)<br/>192.168.86.20<br/>DHCP · DNS · PXE · Registry"]
+
+        subgraph VMS["VMs on System-1 (macvtap)"]
+            GITLAB["GitLab VM<br/>192.168.86.48"]
+            CWS["Claude Workstation<br/>192.168.86.41"]
+            GUAC["Guacamole VM<br/>192.168.86.42"]
+        end
+    end
+
+    subgraph LAB["Lab Network (10.0.0.0/24)"]
+        S1LAB["System-1<br/>10.0.0.1"]
+        S2["System-2 (Hypervisor)<br/>10.0.0.102"]
+        S3["System-3 (Reserved)<br/>10.0.0.103"]
+    end
+
+    subgraph BUBBLE["Bubble-A on System-2 (10.2.0.0/24)"]
+        BK["bind-kea-a<br/>10.2.0.2<br/>DNS · DHCP · NAT"]
+        CP["k8s-cp-1<br/>10.2.0.10"]
+        W1["k8s-worker-1<br/>10.2.0.11"]
+        W2["k8s-worker-2<br/>10.2.0.12"]
+    end
+
+    MAC -->|Tailscale| NUC
+    MAC -->|Tailscale| S1
+    MAC -->|Tailscale| CWS
+    S1 -->|enp8s0f1| S1LAB
+    S1LAB -->|Lab Switch| S2
+    S1LAB -->|Lab Switch| S3
+    S2 -->|br0 bridge| BK
+    BK --> CP
+    BK --> W1
+    BK --> W2
+
+    style HOME fill:#e8f4e8,stroke:#2d7d2d
+    style LAB fill:#e8e8f4,stroke:#2d2d7d
+    style BUBBLE fill:#f4e8e8,stroke:#7d2d2d
+    style VMS fill:#f4f4e8,stroke:#7d7d2d

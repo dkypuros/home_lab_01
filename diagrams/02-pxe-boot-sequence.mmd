@@ -1,0 +1,35 @@
+sequenceDiagram
+    participant S2 as System-2 (Target)
+    participant KEA as Kea DHCP (System-1)
+    participant TFTP as TFTP (System-1)
+    participant HTTP as HTTP (System-1:80)
+    participant REG as Registry (System-1:5000)
+
+    Note over S2: Power On (PXE)
+    S2->>KEA: DHCP Discover
+    KEA->>S2: Offer 10.0.0.102 + boot-file: undionly.kpxe
+    S2->>TFTP: GET undionly.kpxe
+    TFTP->>S2: iPXE binary
+
+    Note over S2: iPXE loaded
+    S2->>KEA: DHCP Discover (iPXE user-class)
+    KEA->>S2: Offer 10.0.0.102 + boot-file: autoexec.ipxe
+    S2->>TFTP: GET autoexec.ipxe
+    TFTP->>S2: Boot script (MAC routing)
+
+    Note over S2: Kernel + Initramfs + Rootfs
+    S2->>HTTP: GET kernel, initramfs, rootfs (~1GB)
+    HTTP->>S2: FCOS live assets (local, fast)
+
+    Note over S2: FCOS boots into RAM
+    S2->>HTTP: GET system-2-final.ign
+    HTTP->>S2: Flattened Ignition JSON
+
+    Note over S2: coreos-installer writes to /dev/sda
+    Note over S2: Reboot into installed FCOS
+    Note over S2: prep-machine.service runs
+
+    S2->>REG: bootc switch (pull hypervisor image)
+    REG->>S2: hypervisor_node:latest
+
+    Note over S2: Final reboot into persistent hypervisor

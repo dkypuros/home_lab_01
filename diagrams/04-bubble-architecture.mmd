@@ -1,0 +1,26 @@
+graph TB
+    subgraph S2["System-2 (Bare Metal KVM Host)"]
+        direction TB
+        HOST["FCOS + bootc<br/>enp4s0 → br0 (10.0.0.102)<br/>ssd-a (954G) · ssd-b (954G)"]
+
+        subgraph BUBBLE["Bubble-A (10.2.0.0/24 isolated)"]
+            direction LR
+            INFRA["bind-kea-a<br/>10.2.0.2<br/>━━━━━━━━<br/>BIND9: cluster-a.lab<br/>Kea: DHCP pool<br/>NAT gateway"]
+
+            subgraph K8S["Kubernetes Cluster (v1.32 + Cilium)"]
+                CP["k8s-cp-1<br/>10.2.0.10<br/>Control Plane<br/>4 vCPU · 8GB"]
+                W1["k8s-worker-1<br/>10.2.0.11<br/>Worker<br/>2 vCPU · 4GB"]
+                W2["k8s-worker-2<br/>10.2.0.12<br/>Worker<br/>2 vCPU · 4GB"]
+            end
+        end
+    end
+
+    OUTER["Lab Network<br/>10.0.0.0/24"] -->|br0| HOST
+    HOST -->|libvirt isolated net| BUBBLE
+    INFRA -->|DNS/DHCP| K8S
+    INFRA -->|br0 NIC: 10.0.0.194| OUTER
+
+    style S2 fill:#f0f0f0,stroke:#333
+    style BUBBLE fill:#ffe8e8,stroke:#cc3333
+    style K8S fill:#e8f0ff,stroke:#3333cc
+    style INFRA fill:#fff0e0,stroke:#cc6600

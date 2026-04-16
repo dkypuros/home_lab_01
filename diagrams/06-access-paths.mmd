@@ -1,0 +1,30 @@
+graph LR
+    MAC["Mac / Phone / iPad"]
+
+    subgraph TS["Tailscale VPN"]
+        NUC_TS["NUC<br/>oob-nuc...ts.net"]
+        S1_TS["System-1<br/>system-1-2...ts.net"]
+        CWS_TS["Claude WS<br/>claude-workstation...ts.net"]
+        GUAC_TS["Guacamole<br/>guacamole-vm...ts.net"]
+    end
+
+    subgraph LAB["Lab Network (10.0.0.x)"]
+        S2_LAB["System-2<br/>10.0.0.102"]
+        S3_LAB["System-3<br/>10.0.0.103"]
+    end
+
+    subgraph BUBBLE_NET["Bubble (10.2.0.x)"]
+        BK["bind-kea-a"]
+        K8S["K8s nodes"]
+    end
+
+    MAC -->|direct| TS
+    S1_TS -->|ProxyJump| S2_LAB
+    S1_TS -->|tunnel :9090| S2_LAB
+    S2_LAB --> BUBBLE_NET
+    NUC_TS -->|Cockpit :9090| NUC_TS
+    GUAC_TS -->|":8080/guacamole"| CWS_TS
+
+    style TS fill:#e8f4e8,stroke:#2d7d2d
+    style LAB fill:#e8e8f4,stroke:#2d2d7d
+    style BUBBLE_NET fill:#f4e8e8,stroke:#7d2d2d
